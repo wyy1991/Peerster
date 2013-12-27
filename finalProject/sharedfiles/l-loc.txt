@@ -1,0 +1,78 @@
+Location, Identity, and Routing
+
+(XXX update to summarize routing basics)
+
+
+Basic questions in any decentralized system:
+
+	How do you identify someone you want to communicate with?
+
+	How do you locate them in order to get a message to them?
+
+In this lecture we will explore some widely-used, but very imperfect,
+	answers to these questions.
+You will need to know these answers in order to understand
+	how the Internet works today and how to deal with it.
+
+
+UseNet/UUCP: you're identified by your location.
+	Identity represented by a short, administratively unique string
+		(e.g., 'decvax').
+	Location represented by a bang path - a source route to find you.
+
+	To send a message, just follow the yellow brick road.
+
+	Advantages:
+		easy to use to send a response to a message you received
+			(just follows the same path back)
+		provides some level of accountability
+			if origin won't behave, can pressure its upstream nodes
+
+	Disadvantages:
+		locator/identifier not globally useful: depends on perspective
+		changes whenever node location or in-between topology changes
+		bang path might not represent best/most efficient path
+
+Major conceptual advance: separate identities from locators,
+	map identities to locators.
+
+	identity: supposed to stay the same wherever you move.
+	locator: contains structure useful for finding you.
+
+Today's Internet: you're identified by a DNS name, located by an IP address.
+	provides a level of indirection
+
+	how IP routing works - brief overview
+		IP address: 32 bits
+		basic shortest-path routing
+		hierarchical CIDR aggregation
+
+		IPv6: same as IP(v4), only 128-bit addresses
+
+	how DNS works
+		Name-to-address records
+		DNS servers
+		root servers
+			currently 13 logical root servers
+			http://root-servers.org/
+		local caching servers
+
+	In reality, both DNS names and IP addresses are fungible
+		DNS load balancing
+		Anycast IP
+
+	That's good and bad
+		Good: can decentralize any IP address, any DNS name
+		Bad: can lead to vulnerabilities
+			DNS hijacking
+				by ISPs along path
+				by trojans in end host
+				by third-parties who can guess DNS responses
+			IP prefix hijacking
+				Pakistan hijacks YouTube (2008)
+
+Further reading:
+	CIDR RFC
+	DNS
+	Location/Identity papers, RFCs?
+

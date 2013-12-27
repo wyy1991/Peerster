@@ -1,0 +1,204 @@
+
+Q: How to find something you're looking for in a decentralized network?
+
+	Scalable routing protocols can answer that question,
+	_if_ we get to choose names/addresses of nodes systematically
+	according to where they are in the topology and how they are attached.
+
+	Hierarchical namespaces like DNS can answer that question,
+	_if_ we're willing to constrain names to a hierarchical namespace,
+	around a well-known, globally trusted "root" namespace.
+
+	What if we want purely decentralized search,
+	for things (nodes, files, etc.) whose names we don't constrain at all?
+
+Ways of specifying a search
+
+	Exact match: search an object by its complete and exact name
+	(e.g., useful with self-certifying IDs, other unique IDs)
+
+	Prefix match: you look for a/b, you get a/b/c and a/b/d
+
+	Keyword search: you look for "stuff", you get "the right stuff",
+	"the good stuff", "the stuff over there", etc.
+
+	Boolean queries: you can look for "this <and> that",
+	"(this <and> that) <or> something-else"
+
+	Complex queries: you pass an expression in some fancy query language,
+	it gets matched (somehow) against objects available.
+
+Flooding.
+
+Naive approach: just ask everyone
+
+	- Use gossip
+	- Originator sends out a Request message to all neighbors
+	- Any node who gets the Request looks through local objects,
+	  then (perhaps only if not found) gossips the request further.
+	- eventually all nodes in the network see the request
+	- on any match, send a Response back along path Request took
+
+	Advantages:
+		- simple
+		- supports arbitrary matching mechanisms
+
+	Disadvantages:
+		- not scalable: everyone sees every request
+		- popular query ("the") might get hits from _everyone_
+			(accidental, "solicited" DoS attack)
+
+Small improvement: expanding-ring flooding
+
+	- Same as above, but attach "budget" to each request
+	- Budget defines number of nodes Request can propagate to.
+	- If node A with k neighbors receives a request with budget B,
+		A performs requested search, then forwards Request
+		to min(k,B-1) neighbors, giving each new Request
+		a budget of about (B-1)/min(k,B-1)
+	- Request "dies out" when its budget drops to zero
+
+	Now, originator node first sends out Request with small budget,
+	sees what it gets back.
+
+	If it doesn't get "enough" hits back, it doubles the budget
+	and sends the Requst again.
+
+	Repeat until originator gets enough responses
+	or budget becomes larger than the whole network.
+
+	Advantages:
+		- still pretty simple
+		- still supports arbitrary matching mechanisms
+		- searches for "nearby" objects
+		  don't take much bandwidth
+		- popular queries ("the") don't DoS the origin
+
+	Disadvantages:
+		- still may not be scalable if many queries
+		  aren't satisfied locally
+
+FreeNet-style caching-based search optimizations
+
+	- Nodes remember Requests they passed along recently,
+	  and where any hits came from in response.
+	- If another identical or similar request comes along,
+	  forward it straight to the node(s) that hit the first time
+	  instead of flooding it to everyone.
+
+	- Better yet - if origin node asked for an object (data block),
+	  cache the actual data block on the return path.
+	  If another request comes in for the same object/block,
+	  return a copy of that block directly instead of forwarding.
+	- Works especially well with searches for SCIDs (FreeNet).
+
+	Benefits:
+		- Work of answering popular queries gets spread around:
+		  previous Requesters can answer,
+		  not just the original owner/host of popular object.
+		- Nodes might build up record of "expertise"
+		  in answering queries for certain keys/prefixes,
+		  leading to specialization, better efficiency
+
+	Disadvantages:
+		- Not clear how well these optimizations really work
+		  or under exactly what circumstances.
+		- Still many non-scalable worst-case scenarios that
+		  require flooding the whole network to find something.
+
+SuperPeer flooding
+
+	- Distinguish between "regular peers" and "superpeers".
+	  (e.g., small fraction of nodes become superpeers)
+
+		could be chosen in any way, but often want to take into account:
+		- does node have a history of reliability?
+		- can many other peers connect to it easily (not behind NAT)?
+		- does it have a lot of bandwidth, CPU, memory, etc.?
+
+	- Each regular peer picks a superpeer to be its "representative"
+
+	- Regular peer uploads to its superpeer a database of search keys
+		for all objects it holds and wants to be searchable.
+
+	- Superpeer aggregates the search key databases
+		of all the peers dependent on it.
+
+	- When regular peer wants to perform a search,
+		it sends a Request to its superpeer.
+
+	- The Request then floods _only_ among the superpeers
+		- each superpeer searches its database of keys,
+			returning any hits among its dependent peers,
+			then floods the Request to neighboring superpeers
+
+	Advantages:
+		- Slightly more scalable
+		- Helps take load off of peers with limited bandwidth, etc.
+
+	Disadvantages:
+		- If each superpeer represents a constant number of peers,
+			overall network isn't asymptotically any more scalable
+			(flooding still requires sending Request
+			to O(N) superpeers)
+
+BubbleStorm "rendezvous" flooding
+
+	1. Each peer chooses sqrt(N) nodes _at random_ from network,
+		replicates its key database on each, as if they were superpeers
+
+	2. To perform a search, send Request out to C*sqrt(N) random nodes,
+		where C is a constant configuration parameter.
+
+	3. Search "succeeds" if at least one of these requests "hits"
+		at least one replica where the desired object's key is stored
+
+	Why does it work reliably?  Because of the birthday paradox
+		- in a room with only 23 people,
+		  chances are even that two will have the same birthday
+		- in a room with 57 people, goes up to 99% probability.
+		- in general: if you have N possible birthdays,
+			you only need sqrt(N) people in order to get
+			a constant probability that two will be the same.
+
+	Advantages:
+		- Conceptually still fairly simple, if cleverly tricky
+		- Still supports arbitrary search queries
+			(because each replica has whole key database,
+			can perform arbitrary search term computations on keys)
+		- Asymptotically better, O(sqrt(N)) scalability
+
+	Disadvantages:
+		- O(sqrt(N)) might still not be "scalable enough";
+			would really prefer O(log(N))
+		- Requires picking nodes uniformly at random in both steps;
+			this isn't actually that easy.
+
+	Important complication: how do you pick a "random" node?
+
+	Based on important graph theory concepts
+
+		- expander graphs
+		- Markov chains (random walks)
+		- fast mixing
+
+	1. if underlying graph isn't an expander, build an expander overlay.
+		not a trivial process; see paper
+	2. to pick a node uniformly at random,
+		simply perform a "long enough" random walk on overlay.
+
+Further issue: how do you search for something "good"?
+
+	- how do you rate the quality or trustworthiness of objects found?
+	- how do different users' quality or trust ratings interact?
+
+	Topic for later...
+
+
+Further reading:
+
+	Freenet: A distributed anonymous information storage
+		and retrieval system
+	BubbleStorm: Resilient, Probabilistic, and Exhaustive
+		Peer-to-Peer Search
+

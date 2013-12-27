@@ -1,0 +1,59 @@
+
+Decentralized storage
+
+Questions:
+	Where do you store?
+	How do you find stored data?
+	How to provide availability? (e.g., how much replication?)
+	How do you handle concurrency?
+
+Centralized models: e.g., NFS
+
+	- All data stored on a particular server
+
+	- clients make remote procedure calls (RPCs) for all ops
+		- open
+		- read
+		- write
+		- rename
+		- ...
+
+	- can replicate server to increase availability
+	- but client's can't access data when disconnected from server
+
+Increasing availability via client-side replication
+
+	- Coda: still have one "primary" server,
+	  but clients can cache files and work on them offline
+
+	- Locus: can have many client-side replicas,
+	  clients can reconcile directly with each other.
+	  Creates consistency challenge and chance of conflicts.
+
+	- Bayou: similiar to Locus, but tries to provide "eventual consistency"
+	  by having a central server "eventually" define a total order.
+
+How to keep track of version information and propagate updates
+
+	- Keep track of all updates as log of diffs, gossip log entries
+
+		- Advantage: conceptually simple, general
+		- Disadvantage: log storage cost builds up over time
+		- Disadvantage: may have to transfer/apply many log entries
+			when reconnecting after a long period of disconnection
+
+	- Version vectors (e.g., LOCUS)
+
+		- Advantage: each node stores only LATEST version
+		- Disadvantage: version vectors may be large if many nodes
+		- Disadvantage: no "reference version" available for diff3
+
+Readings
+
+	Detection of Mutual Inconsistency in Distributed Systems
+	The LOCUS distributed operating system
+	Disconnected operation in the Coda file system
+	Managing update conflicts in Bayou,
+		a weakly connected replicated storage system
+
+

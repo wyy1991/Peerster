@@ -1,0 +1,32 @@
+Decentralized System Final Project - Dsybil
+Name: Yuye (Irene) Wang
+
+
+
+What I did:
+The implementation of DSybil recommendation system based on our peerster file sharing system. More details please see the presentation slides for funcitonalities and mechanisms.
+
+How I did:
+More than 1000+ lines of code are added on our peerster project. 
+Server and client functions are first implemented on the same program, and then separated into two with the difference in layout.
+
+How to run:
+
+In the final project folder, the folder dsybil_server and dsybil_client contains the server and the client program respectively.
+
+(1)To run server:In terminal, go into the dsybil_server directory. -> "make clean" -> "make" -> "./peerster"
+(2)To run client: Interminal, go into the dsybil_client directory. -> "make clean" -> "make" -> "./peerster"
+(3)Run only one server and several client. Connect the server to all clients by copying the server's <IP:PORT>, which is shown on the top left textbox, to the clients' textline, and click "Add server"
+(4)Share file on server: on server side, click button "Share" -> select one or multiple files in the pop up window and share. These shared files should shown in the textbox below, with the number of likes after the file name.
+(5)See who liked the file on server side: Click on the file name that is in the shared box. The box below will show the names of the nodes who liked the file.
+(6)Client Search: type in the keywords that want to search for -> Click"Search" -> The related file present -> Double click to download
+(7)Client search result: Shows the name of the files, and the reputation score of the file. Following if the file is overwhelming, which means the reputation is larger than the threshold, followed by the pointer showing the recommendation.
+(8)Client local trust score: This widget shows the local trust score of all the other nodes. How much I trust other nodes.
+(9)Client like file: select one file in the search box, click like. The client will first update the peers trust score locally, and then send a message to the server to like the file.
+(10)Client dislike file: select one file, and click on dislike file button. The client will modify the peers trust score locally, but this will not affect the server's like score.  
+
+
+
+
+
+

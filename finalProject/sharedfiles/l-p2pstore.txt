@@ -1,0 +1,46 @@
+
+Block-based peer-to-peer storage
+
+	- SFSRO: hash-based read-only file systems
+
+	- PAST, CFS: read/write file systems built on DHTs
+
+	file system represented by a root block,
+	whose hash is the public key of the file system's owner.
+	a given snapshot of file system is read-only,
+	but owner can publish a new file system snapshot
+	by signing and posting a new root block.
+
+	how do you handle directories and build them into FS trees?
+	root block points to hash tree of directories and files.
+
+	how to find a block?  Hash its content, lookup in DHT.
+
+	how to find a given file from a root directory?
+
+	how to handle uneven server capacities?  virtual servers.
+
+	how to replicate?  keep copies at k successors of block's ID.
+
+	how do you create a writeable file system?
+	how do you update a particular file?
+		create new versions of it and all its ancestor dirs.
+	how do you find the latest version of a whole file system?
+		owner signs a record with a change-counter and root hash,
+		inserts it in DHT with position defined by hash of pubkey
+
+	how to prevent capacity overload?  quotas of some kind.
+	But how to define the "users" who should have quotas?
+	CFS: assign quotas to IP addresses.
+
+Readings
+
+	- Separating key management from file system security
+	- Storage management and caching in PAST, a large-scale,
+		persistent peer-to-peer storage utility
+	- Wide-area cooperative storage with CFS
+
+Do clients have to trust the servers on which their data is stored?
+
+	- SUNDR: Fork-consistent untrusted data store
+

@@ -1,0 +1,36 @@
+
+The 3 critical Internet "name-value" mappings:
+- DNS name to IP address
+- IP address to route/location
+- DNS name to security association, e.g., SSL certificates
+
+third is most critical from privacy perspective;
+if the third is working, then first two are critical
+only from an availability perspective.
+(but wherever SSL is not used, first two are critical as well.)
+
+PKI overview
+- root cert public keys embedded in web browser
+- few Root CAs sign "delegation" certificates declaring
+	that other CAs are also trusted to sign server certs
+- subsidiary "issuing" CA signs a cert for, e.g., Google servers
+- when your browser connects to Google server via SSL,
+	the server sends its server-side cert
+	and the "chain" of signatures down from the root CA
+- if you browser can verify the chain up to a root cert it trusts,
+	it silently connects and says all is OK;
+	if not, browser warns about an unknown root CA
+	(and gives you opportunity to click OK).
+
+Man-in-the-middle attacks
+- open source: mitmproxy.org
+- commercial: Blue Coat SSL Inspector (formerly Netronome)
+- deployment models:
+	- "intended" commercial deployment: at a company's firewall
+		use custom root CA, but tweak internal web browser to trust
+	- Iran's approach in 2011: just use untrusted root cert,
+		assume many/most users will click OK to browser warning.
+	- More slick (NSA?) approach: subpoena/steal/aquire
+		any root or subordinate CA's private key
+
+

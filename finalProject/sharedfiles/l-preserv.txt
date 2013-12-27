@@ -1,0 +1,169 @@
+Digital Content Preservation
+
+
+How do you preserve digital content over the long term?
+
+Challenges and threats:
+
+	Physical bit-rot
+
+		CD,s DVDs, hard disks, etc., deteriorate over time
+
+		Hard disks crash
+
+		Machines get fried by power spikes
+
+		Cosmic rays flip bits in memory or
+		on the way to or from storage media
+
+	Logical bit-rot
+
+		How do you view/use a document in WordPerfect 1.0 format?
+
+			Current word processing apps probably won't read it
+
+			WordPerfect 1.0 probably won't run on Win XP etc.
+
+		How do you run software written for obsolete machines?
+
+			Can't find the machine anymore
+
+			Even if you can, its I/O is probably incompatible
+
+				10BASE-T coax-based Ethernet?
+
+				Video output to pre-VGA monitors?
+
+				5 1/4" floppy disks?
+
+			Emulators often not be faithful/accurate enough
+
+				"bug-for-bug" compatibility?
+
+				Identical performance?  [games]
+
+	Deliberate attacks
+
+		Rewrite history
+
+		Censor controversial content
+
+		Denial-of-service attacks: suppress availability
+
+		Attrition attacks: undermine maintenance activities
+		so that natural/random deterioration takes place
+
+One approach: Stanford LOCKSS (Lots Of Copies Keep Stuff Safe)
+
+	Peer-to-peer system: each "peer" is an institutional library
+
+	Each peer manages a set of Archival Units (AUs)
+
+		e.g., one year's issues of a particular journal
+
+	Peers call regular opinion polls on the contents of an AU
+
+		chooses an "inner circle" of participants randomly
+			from a reference list
+
+		only opinions of "inner circle" peers count in poll
+
+		but inner circle participants can suggest "outer circle" peers
+		for potential future inclusion in reference list
+
+		poller must expend some "poll effort"
+		before other peers will do work on its behalf
+
+			limit DoS attacks by malicious nodes calling polls
+
+		participating peers compute hash tree over stored content,
+		compare resulting hashes
+
+		Voters must also expend some effort to cast votes
+
+		Poller classifies votes into invalid, disagreeing, or agreeing
+
+			invalid: indicates fault or malice -
+			kick voter out of inner/outer circle & reference list
+
+			agreeing: top-level hashes match
+
+			disagreeing: top-level hashes don't match
+
+		If number of valid votes doesn't reach a quorum Q,
+		poller discards results, updates ref list, calls another poll.
+
+		If quorum met:
+
+			If agreeing votes no more than D, "landslide loss".
+			Poller's AU is damaged - repairs it.
+
+			If agreeing votes at least V-D, "landslide win".
+			Successful check - update ref list, poll again later.
+
+			Intermediate level: inconclusive - raise alarm.
+
+	Effort:
+
+		Poller must expend at least as much effort
+		as the cumulative effort it imposes on voters
+
+		Use "memory-bound functions" (MBFs)
+
+			Memory bandwidth is less variable than CPU power
+
+		Timeliness of effort: effort must be recently computed;
+		attacker can't precompute and build up over long period
+
+	Inertia, rate-limiting:
+
+		Principle: system should not change quickly
+		no matter how much effort is applied to it.
+
+		Prefer for existing friends over new ones
+
+		A peer updates its AU only as a result of polls _it_ called
+		(not as a result of other peers' polls)
+
+			Peer controls its own frequency of polls =>
+			attacker can't increase rate by causing frequent polls
+
+	Attacks:
+		Stealth modification
+		Nuisance - cause alarms
+		Attrition - prevent repair
+		Theft - obtain published content without consent
+		Free-loading
+
+Dealing with logical bit-rot
+
+	Document-oriented
+
+		Regularly convert old formats to newer ones
+
+			Advantage: always have stuff in latest format
+
+			Disadvantage: may lose information at each conversion
+
+		Maintain array of converters from old formats to latest ones,
+		always convert directly from "original" format
+
+			Advantage: minimize information loss (only 1 step)
+
+			Disadvantage: may require huge number of converters
+
+		VXA: store code to convert from complex formats to simpler ones
+
+	Software-oriented
+
+		Foundation: store entire VMs
+
+Readings
+	Lorie, "Long Term Preservation of Digital Information"
+	Maniatis, "Preserving peer replicas by rate-limited sampled voting"
+	Giuli, "Attrition Defenses for a Peer-to-Peer
+			Digital Preservation System"
+	Maniatis, "The LOCKSS Peer-to-Peer Digital Preservation System"
+	Ford, "VXA: A virtual architecture for durable compressed archives"
+	Rhea, "Fast, inexpensive content-addressed storage in foundation"
+

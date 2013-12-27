@@ -1,0 +1,279 @@
+<html>
+<body>
+
+<h1>UseNet and Gossip</h1>
+
+<h2> <a href="l-usenet-handout.pdf">Handout</a> </h2>
+
+<h2> Part 1: UseNet</h2>
+
+Before the Internet or Web as we know it,
+UseNet was the first successful, mass-scale, decentralized messaging system.
+
+<ul>
+<li>	Brief history:
+	<ul>
+	<li>	1979: Created by Truscott and Ellis.
+		<ul>
+		<li>	Implemented broadcast via simple gossip scheme
+			(see below).
+		<li>	Used
+			<a href="http://tools.ietf.org/rfc/rfc976.txt">UUCP</a>
+			(Unix-to-Unix Copy)
+			to propagate "news" messages over dial-up modem links.
+		</ul>
+	<li>	1981: <a href="http://www.uucp.org/history/uucp-map-1981.html">
+		an early UseNet map in hand-drawn ASCII</a>
+	<li>	1986:
+		As ARPANET/Internet provided widespread always-on connectivity,
+		UseNet began shifting to
+		<a href="http://tools.ietf.org/html/rfc977">NNTP</a>
+		(Network News Transfer Protocol)
+		to propagate news over TCP connections.
+	<li>	1987: <i>The Great Renaming</i> -
+		"Big Seven" naming scheme to name newsgroups by subject:
+		<tt>comp.*</tt>, <tt>sci.*</tt>, <tt>soc.*</tt>, <tt>rec.*</tt>,
+		<tt>talk.*</tt>, <tt>news.*</tt>, <tt>misc.*</tt>.
+		Renegade <tt>alt.*</tt> hierarchy developed
+		for newsgroups created with no central approval.
+	<li>	1990s: Public interest in UseNet peaks,
+		then declines quickly.<br>
+		<img src="l-usenet-books.png"
+		 alt="graph of books about UseNet published per year">
+	</ul>
+<li>	How does it work?  It's all in the header.
+	<ul>
+	<li>	Example USENET message from RFC 1036:
+		<pre>
+		From: jerry@eagle.ATT.COM (Jerry Schwarz)
+		Path: cbosgd!mhuxj!mhuxt!eagle!jerry
+		Newsgroups: news.announce
+		Subject: Usenet Etiquette -- Please Read
+		Message-ID: <642@eagle.ATT.COM>
+		Date: Fri, 19 Nov 82 16:14:55 GMT
+		Followup-To: news.misc
+		Expires: Sat, 1 Jan 83 00:00:00 -0500 
+		Organization: AT&T Bell Laboratories, Murray Hill
+
+		The body of the message comes here, after a blank line. 
+		</pre>
+	<li>	<tt>From:</tt> E-mail address of sender.
+	<li>	<tt>Path:</tt> log of message's propagation through network.
+	<li>	<tt>Newsgroups:</tt> topic/newsgroup name (or names).
+	<li>	<tt>Subject:</tt> message subject, just like in E-mail.
+	<li>	<tt>Message-ID:</tt> unique ID of message (duplicate detection)
+	</ul>
+<li>	Why was UseNet so popular?  A few reasons:
+	<ul>
+	<li>	It worked, even over slow/intermittent connections.
+	<li>	It was decentralized:
+		any geek could run his own server,
+		connect to others, join the administrative "cabal".
+	<li>	It was algorithmically simple:
+		could be understood by administrators,
+		ported/reimplemented on many different operating systems.
+	<li>	It was perceived to be "democratizing" and "censorship-proof".
+		<ul>
+		<li>	Anyone could post, create a group, etc.
+		<li>	(Even after "moderation", "approval" mechanisms added.)
+		<li>	Philosophy: "route around attacks,
+					route around censorship."
+		</ul>
+	</ul>
+<li>	Why did it collapse?  Spam.
+	<ul>
+	<li>	Unscrupulous users discovered a free (to them) way
+		to bulk-mail a huge audience.
+		<ul>
+		<li>	<a href="http://groups.google.com/group/sci.stat.edu/msg/8cb0e6b6941bac09">
+			First spam January 1994:
+			<tt>Global Alert for All: Jesus is Coming Soon</tt></a>
+		<li>	<a href="http://groups.google.com/group/alt.pub.coffeehouse.amethyst/msg/477832eb09859797">
+			First commercial spam April 1994:
+			<tt>Green Card Lottery- Final One?</tt></a>
+		</ul>
+	<li>	UseNet fell victim of its own success:
+		routed everything, <i>including spam</i>,
+		around all attempts to control ("censor") spam.
+	<li>	Free for anyone to post, no real controls/filters available ->
+			signal-to-noise ratio of any popular group
+			tends toward zero.
+	<li>	People found and moved to alternatives:
+		private E-mail lists, Yahoo groups, Facebook, etc.
+	<li>	Classic tragedy of the commons,
+		with <i>human attention</i>
+		being the scarce, overgrazed resource.
+	</ul>
+<li>	Background reading:
+	<ul>
+	<li>	<a href="http://tools.ietf.org/html/rfc1036">
+		RFC 1036: Standard for Interchange of USENET Messages</a>
+	<li>	<a href="http://www.columbia.edu/~hauben/netbook/">
+		Hauben et al.,
+		<i>Netizens: On the History and Impact of Usenet
+		and the Internet</i>, Wiley-IEEE Computer Society, 1997.</a>
+	<li>	Lueg and Fischer (eds),
+		<i>From Usenet to CoWebs: interacting with social
+		information spaces</i>, Springer, 2003.
+	<li>	Templeton, <a href="http://tim.oreilly.com/lpt/a/1455">
+		I Remember USENET</a>, O'Reilly Network, 2001.
+	<li>	<a href="http://www.giganews.com/usenet-history/index.html">
+		GigaNews' UseNet History</a>.
+	<li>	Swartz, <a href="http://www.kls2.com/~karl/papers/lisa93.pdf">
+		Forecasting Disk Resource Requirements for a Usenet Server</a>,
+		LISA 1993.
+		<a href="http://www.kls2.com/~karl/papers/news-growth/">
+		Updated statistics</a>.
+	<li>	<a href="http://www.nobell.org/~gjm/about/ihnp4.html">
+		Murakami,
+		<i>The History of ihnp4 and The Growth of the Email Network</i>,
+		1988.</a>
+	<li>	Vinge, <i>A Fire Upon the Deep</i>: a well-known sci-fi novel
+		incorporating an interstellar parody of (or homage to) UseNet.
+	</ul>
+</ul>
+
+<h2> Part 2: Gossip Mechanisms </h2>
+
+UseNet's message distribution mechanism
+is an example of a <i>epidemic</i> or <i>gossip</i> algorithm
+We now look in more technical detail at this class of algorithms.
+
+<ul>
+<li>	Naive approach.
+	<ul>
+	<li>	On receiving a message,
+		re-broadcast it to all neighbors except the one who sent it.
+	<li>	Major problem: graph cycles result in forwarding loops.
+	</ul>
+<li>	Simple but realistic approach (UseNet).
+	<ul>
+	<li>	Assign each message a <i>unique identifier</i> of some kind.
+	<li>	On receiving a message,
+		first check ID against database of already-received IDs.
+		If already received, ignore new duplicate.
+	<li>	Only if message is new, re-broadcast it as above.
+	<li>	Advantage: works in the presence of arbitrary loops.
+	<li>	Disadvantages:
+		<ul>
+		<li>	How long do you store IDs of received messages?
+			<ul>
+			<li>	If forever: database size is unbounded.
+			<li>	If limited: how long to store IDs?
+				What happens if very-old message gets resent?
+			</ul>
+		<li>	Well-connected nodes often receive the same message
+			many times: waste of network bandwidth.
+		</ul>
+	<li>	Security challenges:
+		<ul>
+		<li>	What happens if a node accidentally or deliberately
+			chooses message IDs colliding with another node's?
+		<li>	What happens if a node changes a message's body
+			but leaves its message ID before forwarding?
+		<li>	What happens if a node changes a message's ID
+			while leaving its body before forwarding?
+		<li>	If a node misbehaves, how do you trace that misbehavior?
+			(UseNet: record each message's propagation path.)
+		</ul>
+	</ul>
+<li>	Randomized technique: <i>rumor-mongering</i>.
+	<ul>
+	<li>	Keep database of message IDs received as above.
+	<li>	On receiving a <i>new</i> message,
+		save its ID in database, then loop:
+		<ol>
+		<li>	Pick a random neighber (other than source of message).
+		<li>	Rebroadcast the message to the chosen neighbor.
+		<li>	Neighbor replies indicating whether or not
+			it had already seen message.
+		<li>	If message was new to neighbor, repeat this loop.
+		<li>	If neighbor had already seen message,
+			then repeat this loop with some probability
+			<i>p</i> &lt; 1,
+			otherwise terminate loop.
+		</ol>
+	<li>	Advantages:
+		<ul>
+		<li>	Fast: when the rumor is new ("hot"),
+			it propagates as quickly as possible:
+			exponential fan-out in well-connected network.
+		<li>	Efficient: when rumor is old ("cold")
+			and most nodes already have it,
+			nodes stop resending quickly, wasting little bandwidth.
+		</ul>
+	<li>	Disadvantage:
+		<ul>
+		<li>	Unreliable:
+			rumor may not spread to <i>all</i> nodes
+			before it becomes "cold" everywhere
+			and no one is still trying to spread it.
+		</ul>
+	</ul>
+<li>	Another randomized technique: <i>anti-entropy</i>.
+	<ul>
+	<li>	Independently of when any new message is received,
+		each node occasionally (periodically) does the following:
+		<ol>
+		<li>	Pick a random neighbor.
+		<li>	Compare list of message IDs received so far
+			with the neighbor's list.
+		<li>	For all message IDs one node has received
+			and the other hasn't, transfer corresponding message.
+		<li>	Result: received message ID databasees
+			should be identical.
+		</ol>
+	<li>	Advantage:
+		<ul>
+		<li>	Reliable: guarantees that each message
+			will <i>eventually</i> propagate to all nodes.
+		</ul>
+	<li>	Disadvantages:
+		<ul>
+		<li>	May take substantial bandwidth to compare databases
+			<ul>
+			<li>	though various optimizations are possible
+			</ul>
+		<li>	New/rare messages spread slowly.
+			<ul>
+			<li>	driven only by periodic activities,
+				not directly by message arrival.
+			</ul>
+		</ul>
+	</ul>
+<li>	Combining rumor-mongering with anti-entropy.
+	<ul>
+	<li>	Rumor-mongering spreads a hot, new message
+		very quickly and efficiently to <i>most</i> nodes.
+	<li>	Once <i>most</i> nodes have each message,
+		any node that doesn't will get it with high probability
+		during its next anti-entropy round.
+		<ul>
+		<li>	if <i>k</i> out of <i>n</i> nodes
+			have the message,
+			then a node that doesn't have it will
+			pick a node that <i>does</i>
+			with probability <i>k/n</i> during anti-entropy.
+		</ul>
+	<li>	Result: a fast, efficient, reliable algorithm.
+		<ul>
+		<li>	All nodes guaranteed to receive each message eventually.
+		<li>	Messages propagate quickly with high probability.
+		<li>	Not too much bandwidth is wasted re-sending messages.
+		</ul>
+	</ul>
+<li>	What about the problems that made UseNet collapse?
+	Those are the <i>hard</i> problems,
+	left for future lectures!
+<li>	Further reading:
+	<ul>
+	<li>	Demers et al.,
+		<i>Epidemic Algorithms for Replicated Database Maintenance</i>,
+		PODC 1987.
+	<li>	Karp et al.,
+		<i>Randomized Rumor Spreading</i>,
+		FOCS 2000.
+	</ul>
+</ul>
+
+</body>

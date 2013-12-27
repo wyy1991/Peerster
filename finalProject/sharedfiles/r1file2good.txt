@@ -1,0 +1,119 @@
+
+Structured search
+
+	What if we want better than O(sqrt(N)) scalability, e.g., O(log(N))?
+
+DHTs
+	just like a dictionary, but distributed:
+		stores (key,value) pairs
+		provides efficent lookup of value given key
+		values might be actual data or just (small) location pointers
+
+	if we want O(log(N)) scalability,
+	probably means each node shouldn't have to know about every other;
+	otherwise they would need O(N) maintenance traffic per node.
+
+	thus, usually want to shoot for O(log(N)) maintenance traffic as well.
+
+	Operations:
+		Join(node id)
+		Insert(key, value)
+		Lookup(key) -> value or "not present"
+
+Choord
+
+	Basic approach
+		each node picks a random ID in a circular numeric space.
+		supervises a region of ID space immediately following its ID.
+
+		for each key to be stored, hash that key into ID space.
+
+		each node is "responsible for" keys in "its" arc of ID space.
+			- stores all such keys and their values.
+
+		each node keeps pointer to its successor in ID space
+
+		to look up key "the slow way", hash it into ID space,
+		then follow successor pointers to find the node
+		responsible for the hash of the desired key,
+		and ask responsible node for corresponding value.
+
+	Getting good Performance
+		each node keeps a finger table:
+			for each power of two distance in ID space,
+			pointer to some node "at least that distance" away
+			around the ring.
+
+		to find a given key,
+		take the "largest hop possible" first using finger table,
+		then narrow down the search.
+
+		each finger followed decreases search space by at least half.
+
+		thus, O(log(N)) hops before we find key
+		(or node that should have it if it existed)
+
+	Recursive versus iterative lookup
+
+		Iterative: origin node requests & follows each finger
+
+		Recursive: origin node invokes first finger,
+			first finger invokes second finger, etc.
+
+	Reliability
+		what if nodes fail, lose keys, etc.?
+
+		redundancy mechanisms:
+
+		maintaining the ring structure:
+		- multiple redundant successor pointers per node
+
+		maintaining the availability of individual keys:
+		- store each (key,value) pair in multiple nodes
+			- method 1: key's 'r' predecessor nodes on ring
+			- method 2: 'r' independent hashes of key
+
+		how to repair structure after node failures?
+			- wrong successor pointer
+				- "know your neighbor's neighbors"
+			- missing (key,value) pairs
+			- node arrival, adoption of (key,value) pairs
+			- graceful node departure
+
+	Availability
+		what about node hosting a really popular key?
+			- gets hammered with lookup requests
+
+		solution 1: immediate neighbors cache
+			popular (key,value) pairs, handle some of lookup load
+
+		solution 2: finger predecessors cache popular (key,value) pairs
+			- allows larger set of nodes to cache
+			- cached entries propagate backward along
+				popular "request paths"
+				(though not clear how much benefit
+				given non-locality of node IDs)
+
+	Advantages
+		highly scalable
+
+	Disadvantages
+		only easy to search for specific key (e.g., SCID);
+		much harder to implement approximate or complex searches.
+
+		quite vulnerable to network churn.
+
+		doesn't naturally preserve any form of locality
+
+Kademlia
+	Tries to address locality,
+	provide more flexibility in who can cache what
+
+	Different distance metric: "XOR"
+
+	...
+
+Reading list
+	Chord
+	Kademlia
+	"Exploiting Network Proximity in Distributed Hash Tables"

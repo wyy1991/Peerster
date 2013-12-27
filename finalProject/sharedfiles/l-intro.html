@@ -1,0 +1,128 @@
+<html>
+<body>
+
+<h1>Building Decentralized Systems: Course Introduction</h1>
+
+<h2>Course Overview</h2>
+
+<ul>
+<li>	This course is about <i>decentralized systems</i>.
+	What is a decentralized system?
+<li>	An appealing but simplistic definition is
+	<i>a system that works although no one's in charge.</i>
+<li>	More precise definitions:
+	<ul>
+	<li>	<i>Distributed system:</i>
+		a system of multiple computers (nodes)
+		communicating over a network.
+	<li>	<i>Decentralized system:</i>
+		a distributed system in which different nodes
+		or subsets of the network are owned or controlled
+		by different people, organizations, or interests.
+	</ul>
+<li>	Some illustrative examples:
+	<ul>
+	<li>	Centralized distributed systems: Google, Yahoo, Facebook.
+	<li>	Decentralized distributed systems: E-mail, IRC, BitTorrent, Tor.
+	</ul>
+<li>	Why study decentralized systems?
+	<ul>
+	<li>	<b>Direct applicability:</b>
+		only a decentralized system can solve computing problems
+		in which there is no common authority <i>everyone</i> trusts.
+	<li>	<b>Indirect applicability:</b>
+		real life is full of decentralized systems &mdash;
+		but unlike other relevant fields (econ, soc-sci, pol-sci),
+		we get to <i>build</i> and not just <i>study</i> them.
+	<li>	<b>Intellectual challenge:</b>
+		making decentralized systems work reliably and securely
+		is often fundamentally more difficult than centralized systems,
+		because we get to make fewer simplifying assumptions &mdash;
+		particularly about security.
+	</ul>
+<li>	Why might we want to build a decentralized system?
+	<ul>
+	<li>	Sometimes a <b>basic requirement</b>:
+		e.g., federated or "business-to-business" systems
+		in which there is no natural trusted authority.
+	<li>	Decentralized system components/subsets may be more 
+		<b>autonomous</b>,
+		and hence more <b>available</b> or <b>reliable</b>
+		in the face of disconnection or network partition,
+		if they aren't dependent on regular communication
+		with a central authority.
+	<li>	Successful decentralized systems can become
+		vibrant, diverse <b>evolutionary ecosystems</b>
+		when alternative, competing node implementations
+		can coexist and interoperate but evolve independently
+		(e.g., IRC clients, P2P clients).
+	<li>	This diversity can in turn make a decentralized system
+		<b>less vulnerable to attack or infection</b>:
+		only a subset of the complete system is likely to be vulnerable
+		to any given attack or infection.
+	</ul>
+<li>	Why might we prefer <i>centralized</i> systems?
+	<ul>
+	<li>	<b>Management simplicity</b>:
+		it's <i>much</i> simpler to manage
+		an army of obedient slaves;
+		&ldquo;managing&rdquo; a decentralized system
+		is akin to herding cats.
+	<li>	<b>Security model simplicity</b>:
+		a lot of hard security challenges become easy
+		when you can just ask a central authority who we assume
+		(rightfully or not) to be trustworthy.
+	<li>	<b>Efficiency</b>:
+		A centralized management and security model can allow for
+		simpler and more efficient algorithms,
+		less overhead due to crypto, etc.
+	<li>	<b>Functionality</b>:
+		There are some types of processing that are easy
+		on centralized data,
+		but which we don't (yet) know how to do at all
+		in a decentralized fashion.
+		For example, Gmail's spam detection and prevention system
+		likely benefits a lot from direct access to the content
+		of many users' E-mail accounts.
+	<li>	<b>Version compatibility</b>:
+		one can limit the number/variety of software versions
+		that exist in a centralized system,
+		but a decentralized node might have to (try to) interoperate
+		with <i>any</i> past, future, or independently developed
+		software/hardware combination on another node.
+	</ul>
+<li>	Course goals:
+	<ul>
+	<li>	Understand the fundamental challenges 
+		inherent in designing and building decentralized systems.
+	<li>	Get a feel for the (limited) body of techniques and solutions
+		we currently have for meeting these challenges.
+	<li>	Examine a number of real, past and present systems,
+		how they work, and how and why they succeeded or failed.
+	<li>	Solidify this knowledge by applying it to the construction
+		of a small, but working and usable, decentralized system.
+	</ul>
+<li>	Some major general topics and applications we will cover:
+	<ul>
+	<li>	Communication: messaging, chat, voice/video
+	<li>	Decentralized search and data mining facilities
+	<li>	Collaboration mechanisms (e.g., wiki)
+	<li>	Social networking
+	<li>	Deliberation, peer review (voting, reputation systems)
+	</ul>
+<li>	This course inherently has a heavy security component &mdash;
+	which we approach <i>not</i> primarily
+	from a formal or cryptographic perspective,
+	but from a pragmatic systems perspective.
+<li>	Recurrent issues and themes we will see throughout the course:
+	<ul>
+	<li>	Identity (real, sybil) versus location
+	<li>	Information integrity and privacy
+	<li>	Behavior accountability
+	<li>	Denial-of-service
+	<li>	Protocol efficiency,
+		in the normal case and under load or attack
+	</ul>
+</ul>
+
+</body>

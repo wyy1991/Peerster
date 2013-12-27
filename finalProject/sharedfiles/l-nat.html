@@ -1,0 +1,335 @@
+<html>
+<body>
+
+<h1>Firewalls, NATs, and Getting Through Them</h1>
+
+
+<ul>
+<li>	The Internet was originally a completely "peer-to-peer" network.
+	<ul>
+	<li>	Any node could send a packet to any other node,
+		"out of the blue" and with no fuss,
+		given only the target node's global IP address.
+	<li>	All the early Internet applications were essentially P2P:
+		<ul>
+		<li>	<tt>telnet/rsh</tt>:
+			remote login from any host to any other.
+		<li>	<tt>ftp</tt>:
+			file transfer from any host to any other.
+			(Could even do a "3-way transfer"
+			from host A to host B under direction of host C!)
+		<li>	<tt>smtp</tt> (E-mail):
+			copy E-mail directly from sending host
+			to receiving host.
+			(POP/IMAP servers, Webmail, etc., came much later.)
+		</ul>
+	<li>	All the "peers" on the early Internet
+		were <i>big</i> machines run by known,
+		thus accountable, system administrators.
+	</ul>
+<li>	Then what happened?  The Internet succeeded, reached the masses.
+	<ul>
+	<li>	PC networking revolution:
+		every desktop (and later laptop) machine
+		wanted to be directly attached to the Internet.
+	</ul>
+<li>	This success brought three major challenges:
+	<ul>
+	<li>	<b>Ease of use:</b>
+		Nontechnical users wanted to attach their machines
+		without having to understand routing and IP addresses.
+	<li>	<b>IP address pressure:</b>
+		With millions then billions of networked machines connected,
+		the 32-bit IP address space stopped looking so inexhaustible.
+	<li>	<b>Security:</b>
+		Since anyone could and did get their machines on the net,
+		it became impossible to hold machine owners accountable.
+		<ul>
+		<li>	Simple attachment mechanism (DHCP)
+			meant no one had a record of who had which IP address;
+			misbehaving host could just chang IP addresses.
+		<li>	Proliferation of viruses/malware means that
+			machine owner not necessarily responsible
+			for host's misbehavior.
+		<li>	Sheer number of machines attached
+			made it impractical for network admins to keep track
+			even on closed/locked-down networks.
+		</ul>
+	</ul>
+<li>	So what happened?
+	<ul>
+	<li>	The industry looked for quick fixes.
+	<li>	Found two: firewalls and NATs.
+	<li>	Originally separate; now generally bundled into same box.
+	</ul>
+
+<li>	<b>Firewalls:</b> 
+	quick fix for the network security challenge.
+	<ul>
+	<li>	Basic premise: create "safe enclaves"
+		by building fences around around private networks.
+		<ul>
+		<li>	<b>Inside</b>:
+			private, internal hosts assumed to be
+			"friendly by default".
+		<li>	<b>Outside</b>:
+			public, external hosts assumed to be
+			"unfriendly by default".
+		</ul>
+	<li>	Administrators could define Internet access policies
+		<ul>
+		<li>	Allow certain applications (known via port numbers),
+			disallow others.
+		</ul>
+	<li>	But nontechnical "home network" users, and many admins,
+		didn't know how, want to, or have time to customize policies
+		on an application basis.
+	<li>	Thus, a standard <i>default policy</i> arose:
+		<i>allow outgoing, deny incoming.</i>  Reasoning:
+		<ul>
+		<li>	"Bad" traffic (viruses, hackers) 
+			usually come from outside the private network,
+			directed toward inside.
+		<li>	"Good" traffic (Web, POP/IMAP, etc.)
+			usually come from inside the private network,
+			directed toward outside.
+		</ul>
+	<li>	But any "connection" involves packets flowing both ways!
+		So how does a firewall work?
+		<ul>
+		<li>	Breaks the Internet's first design principle,
+			by making routers stateful.
+		<li>	Look at the <i>first</i> packet on a connection,
+			make a decision depending on which way it flows.
+		<li>	For allowed connections (usually outbound),
+			first packet causes firewall to create
+			an entry in a <i>flow table</i>.
+		<li>	Subsequent packets in either direction allowed
+			if there's a flow table entry.
+		<li>	Flow/connection usually identified by 5-tuple
+			(source IP, source port, dest IP, dest port, protocol).
+		</ul>
+	<li>	Do firewalls actually address security?  Pros and cons:
+		<ul>
+		<li>	Pro: they <i>do</i> filter out a huge amount
+			of "background radiation", much of it harmful.
+		<li>	Con: bad guys have adapted
+			and found many other ways to get into private networks.
+			<ul>
+			<li>	Trick gullible users
+				into visiting bad or compromised web sites
+				(outgoing connections allowed!)
+			<li>	Get viruses/trojans on internal hosts
+				by exploiting software bugs;
+				then attack the "soft underbelly" from inside.
+			</ul>
+		<li>	Con: firewalls maintain per-flow state.
+			<ul>
+			<li>	If firewall loses its state (e.g., reboots),
+				all your flows stop working.
+			<li>	If firewall's flow table fills up,
+				it drops new and/or old connections
+				that might actually be in use.
+			</ul>
+		<li>	Con: firewalls inhibit peer-to-peer communication.
+			<ul>
+			<li>	If two hosts are both behind firewalls,
+				then any flow one tries to create to the other
+				gets rejected as "inbound"
+				by the other host's firewall.
+			</ul>
+		</ul>
+	</ul>
+
+<li>	<b>NATs:</b>
+	quick fix for ease of use and IP address pressure.
+	<ul>
+	<li>	NATs address <b>IP address pressure</b>
+		by multiplexing many private IP addresses onto a few
+		(usually just one) public IP addresses.
+		<ol>
+		<li>	Internal host initiates a flow
+			from some internal (source IP, source port)
+			to some external (dest IP, dest port).
+		<li>	NAT intercepts first packet;
+			allocates a different, <i>public</i> source port
+			at the NAT's own public IP address.
+		<li>	NAT maintains a <i>translation table</i>:
+			maps (internal source IP, internal source port)
+			to (external source IP, external source port).
+		<li>	Uses table to perform the same mapping in reverse
+			on subsequent incoming packets on flow.
+		</ol>
+	<li>	NATs address <b>ease of use</b>
+		by enabling plug-and-play "network composition."
+		<ul>
+		<li>	Assume upstream router (e.g., ISP) supports
+			<a href="http://tools.ietf.org/html/rfc2131">
+			Dynamic Host Configuration Protocol (DHCP)</a>.
+		<li>	DHCP allows any network host to request and get
+			<i>one</i> IP address automatically.
+		<li>	But a private network needs <i>several</i> IP addresses;
+			getting a whole subnet from an ISP
+			takes more money and more admin time/expertise.
+		<li>	So, NAT/Router uses DHCP "upstream"
+			to get its <i>one</i> public IP address automatically;
+			<i>provides</i> DHCP "downstream"
+			to give hosts on internal network private IP addresses.
+		<li>	Users don't need to know about IP addresses;
+			just plug in the cables according to the instructions.
+		</ul>
+	<li>	Do NATs succeed in addressing these problems?
+		Again, yes and no.
+		<ul>
+		<li>	Pro: they do kinda work.
+		<li>	Con: they maintain per-flow state (see above).
+		<li>	Con: they inhibit P2P communication (see above).
+		<li>	Con: they've been a good/lame excuse not to deploy IPv6.
+		<li>	Con: hosts behind NATs can't have global DNS names.
+			<ul>
+			<li>	DNS assumes it's mapping a global name
+				to a global IP address
+			<li>	but there's no global IP address to translate to
+			</ul>
+		<li>	Con: they make it impossible for any (new) transport
+			other than TCP or UDP to traverse the Internet.
+			<ul>
+			<li>	NATs <i>must</i> translate port numbers
+				to multiplex many IPs onto one.
+			<li>	Port numbers are in the transport header,
+				not the IP header.
+			<li>	Thus, a port translation mechanism
+				is necessarily specific to each transport.
+			<li>	Even a NAT that wants to be "future-proof"
+				has <i>no way</i> to support
+				new, unknown transports generically.
+			</ul>
+		<li>	Con: it's easy to set up very strange,
+			often dysfunctional multi-level NAT topologies,
+			even accidentally.
+			<ul>
+			<li>	<b>Scenario 1:</b>
+				ISP (e.g., America Online) NATs its users.
+				Each user gets one (private) IP from ISP.
+				User attaches a home NAT/Router to uplink,
+				attaches many ("doubly-private"?)
+				downstream hosts.
+			<li>	<b>Scenario 2:</b>
+				Joe Home User gets a DSL modem from ISP,
+				and a wireless router to provide home WiFi,
+				not realizing that <i>both</i> implement NAT.
+				(Should have just gotten a WiFi access point,
+				but the router was more expensive;
+				must be better.)
+			</ul>
+		</ul>
+	</ul>
+
+<li>	To write a P2P app for <i>today's Internet</i>,
+	unfortunately, must work around ubiquity of firewalls & NATs.
+	Two common approaches (may be somewhat complementary in practice):
+	<i>explicit firewall/NAT protocols</i> and <i>hole punching</i>.
+
+<li>	<b>Explicit firewall/NAT protocols</b>
+	<ul>
+	<li>	Basic idea:
+		allow hosts on private networks
+		to discover and talk to upstream NAT.
+		<ul>
+		<li>	Learn upstream, "public" IP address.
+		<li>	Explicitly request public/private translation bindings.
+		<li>	Request the firewall/NAT to allow incoming connections.
+		<li>	Control lifetime of bindings, refresh them explicitly.
+		</ul>
+
+	<li>	Examples:
+		<ul>
+		<li>	Microsoft's "Universal Plug and Play" (UPnP)
+		<li>	Apple's "NAT Port Mapping Protocol" (NAT-PMP)
+		<li>	SOCKS5 proxy protocol, sort of
+			(but requires explicit proxy configuration)
+		</ul>
+
+	<li>	Pros and cons:
+		<ul>
+		<li>	Pro: kinda works.
+		<li>	Con: both app and NAT must support the protocol.
+		<li>	Con: Only works behind <i>one</i> level of NAT.
+			If app is behind two levels,
+			it just pops from a "double-private"
+			to a "single-private" IP address/port endpoint.
+		<li>	Con: ISPs running big NATs
+			aren't eager to let users "control" their NATs.
+		</ul>
+	<li>
+	</ul>
+
+<li>	<b>Hole punching</b>
+	<ul>
+	<li>	Basic idea: leverage (abuse?) NATs' standard
+		"allow outgoing flows" behavior.
+		<ul>
+		<li>	Two clients behind NATs first contact
+			third-party <i>rendezvous server</i> with public IP.
+		<li>	One client signals desire to connect to the other
+			indirectly via rendezvous server.
+		<li>	Rendezvous server observes flows coming from
+			each client's <i>public</i>
+			(source IP, source port) endpoint;
+			reports these endpoints to both client hosts.
+		<li>	Each client host actively initiates outgoing flow
+			to the <i>other</i> client's public endpoint.
+		<li>	Each client's flow appears to <i>its</i> NAT
+			as an outgoing connection, hence allowed;
+			sets up a translation binding.
+		<li>	One client's initiation attempt
+			might get blocked at first by <i>other</i> client's NAT,
+			but hopefully <i>other</i> client's outgoing attempt
+			will open it up soon.
+		<li>	(XXX insert diagram)
+		</ul>
+
+	<li>	Examples:
+		<ul>
+		<li>	Skype, many other modern VoIP applications.
+		<li>	Many multiplayer online games.
+		<li>	...
+		</ul>
+
+	<li>	Pros and cons:
+		<ul>
+		<li>	Pro: kinda works, "often".
+		<li>	Pro: often works even behind multiple levels of NAT.
+		<li>	Con: fragile - lots of ifs, buts, uncertaintly.
+			<ul>
+			<li>	Many types of "bad behavior" observed
+				that tend to break hole punching
+			<li>	Many variant techniques available,
+				none of them always guaranteed to work.
+			<li>	Just have to try and see if it works.
+			<li>	If not, have to have a fallback path
+				(e.g., relay all traffic thru rendezvous server)
+			</ul>
+		</ul>
+	</ul>
+
+<li>	Further reading:
+	<ul>
+	<li>	<a href="http://bford.info/pub/net/p2pnat-abs.html">
+		Ford et al.,
+		<i>Peer-to-Peer Communication Across
+			Network Address Translators</i>,
+		USENIX 2005.</a>
+	<li>	Biggadike et al.,
+		<i>NATBLASTER: Establishing TCP connections
+			between hosts behind NATs</i>,
+		SIGCOMM Asia Workshop, April 2005.
+	<li>	Eppinger,
+		<i>TCP connections for P2P apps:
+			A software approach to solving the NAT problem</i>,
+		Tech Report CMU-ISRI-05-104, Carnegie Mellon University,
+		January 2005.
+	</ul>
+</ul>
+
+</body>

@@ -1,0 +1,28 @@
+Decentralized System 
+Final Poject Proposal
+
+Yuye Wang
+
+Topic:Dsybil Recommendation System
+
+Reference Paper: DSybil: Optimal Sybil-Resistance for Recommendation Systems
+
+Description: This project will implement the dsybil recommendation system based on the peerster project. The system will provide file downloading from a centralized server. Feedback score will be build for each file on the server in order to guide the user to select good file source. Reputation score is built for each user, rating on how likely the user is going to provide honest feedback. This system should be able to prevent sybil attack after some time of use.
+
+Functions:
+Server will store and share files to the clients, and clients are able download files from server.
+After each download, the user is allowed to provide feedback to the file downloaded.(+1 or 0)
+The reputation score for each file, will be the sum of each feedback multiplied by the reputation score of the user who provided the feedback.
+The system will recommend good file source based on the file's reputation score.
+The the reputation score of other users is computed and stored locally at each client's node, and the reputation score of each other user will be shown on the client's side. 
+The server will store which user has voted on each of the files.
+In this system, transactions only happen between server and the clients. The server need to be always on, while the clients can be offline while doing ratings. The reputation score is bounded to the node's ip address and port number.
+
+
+
+
+
+
+
+
+

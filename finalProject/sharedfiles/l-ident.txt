@@ -1,0 +1,215 @@
+
+How do we identify things in a decentralized system?
+
+In general, we need "names" or "identifiers" of some kind.
+
+What kinds of things do we want to refer to?
+	- Users: Alice, Bob, Carol
+	- Machines
+	- Objects: e.g., a particular file or web page
+	- Versions of a particular object
+
+In a naming model, we often care about:
+	- Convenience: how easy to use are the names/identifiers?
+	- Uniqueness: does a name mean to the same thing to everyone?
+	- Security: am I sure I'm referring to what I think I'm referring to?
+
+It's difficult to achieve all three at once, as we'll see!
+
+Let's focus on the security issue first...
+	If Alice and Bob know each others' public keys,
+	and only they themselves know their respective private keys,
+	then:
+		- Alice can encrypt a message only Bob can decrypt (RSA)
+		- Alice can verify a message signed by Bob (DSA)
+		- Alice and Bob can form a mutually shared secret (DH)
+
+	But how do Alice and Bob get to know each others' public keys?
+		- Can Alice and Bob just E-mail each other their keys?
+		- Eve can intercept the message and insert her own keys,
+		  then sit in the middle and forward (or modify) messages.
+		  Man-in-the-Middle (MITM) attack.
+		- Public-key crypto is a useful tool,
+		  but it only pushes the "knows the correct key" assumption
+		  one step back,
+		  by not requiring the exchanged keys to be secret.
+
+Classic "partly-decentralized" approach: public-key infrastructure (PKI)
+
+	Build a hierarchy of Certification Authorities (CAs)
+
+	Each has a public/private (signing) key pair.
+
+	Assume _everyone_ trusts the Root CA and knows its public key.
+
+	Root CA manages a database of "name to public key" mappings,
+	and distributes signs each mapping.
+
+		Anyone in the root CA's namespace can present a certificate,
+		signed by the root CA, that he owns that name.
+
+	Problem: namespace is too big for Root CA alone to manage.
+
+	Solution: Root CA delegates "certification authority"
+	for parts or all of the namespace to Sub-CAs.
+
+		Sub-CA has a certificate signed by Root CA,
+		saying "Sub-CA Key <k> is authorized to certify name mappings."
+
+		Anyone in Sub-CA's namespace can present a certificate,
+		signed by the Sub-CA, that he owns the name.
+
+		Verifier must then check this name mapping certficate
+		against the public key Sub-CA's certificate,
+		AND check Sub-CA's certificate against Root CA's public key,
+		to be sure the mapping is legitimate.
+
+	Challenges:
+		- It is difficult to get everyone to trust the same authority.
+		- It is difficult to agree on how to manage namespace.
+			- How do you decide who has legitimate right to a name?
+		- It is difficult to revoke names once certificates are signed.
+			- Can make certificates expire at a specified date,
+			  but that causes inconvenience at regular intervals.
+			- Can distribute signed "cert revocation lists" (CRLs),
+			  but it's difficult to keep them up-to-date.
+
+Now back to really decentralized approaches.
+
+Suppose we care about uniqueness and security but not convenience.
+
+Self-certifying identifiers (SCIDs):
+
+	Simply an ASCII-encoded cryptographic hash of something.
+
+	The "something" defines what the identifier refers to,
+	and the hash provides a secure and cryptographically unique
+	binding to that something.
+
+	Example 1: self-certifying file IDs
+
+		You want to identify a particular version of a file 'foo'?
+
+		Just run 'sha1 foo >foo.scid'
+
+		You get something like:
+			d6a874e131db6359d5cf2438b1ca4d3122994a3f
+
+		Now use that as the name for 'foo'.
+
+			Alice somehow learns about this SCID
+			and decides she's interested in
+			the object it refers to.
+
+				- Finds it in a database of "interesting SCIDs"
+				- Carol sends Alice an E-mail saying
+					"cool, check out object d6a874e131...!"
+
+			Alice asks if any of her friends (e.g., Bob)
+			have the object that this ID refers to.
+
+			Bob says, "yes, here's a copy" ...
+
+			Alice receives the object from Bob,
+			and can verify it against the hash.
+
+			Bob can't supply the wrong object
+			without Alice knowing.
+
+	Example 2: self-certifying public key IDs
+
+		Alice runs 'sha1 id_dsa.pub >id_dsa.scid'
+
+		Now alice tells her friends,
+		"Hey, my SCID is 38b1ca4d31..."
+
+		Carol learns Alice's SCID from Bob, wants to contact Alice.
+
+		Carol broadcasts a message,
+		"Hey, is anyone with SCID 38b1ca4d31..." here?
+
+		Alice: "Yeah, that's me."
+
+		Carol: "Prove it."
+
+		Alice: "Here's my public key."  (sends id_dsa.pub)
+
+		Carol hashes id_dsa.pub and checks it against the SCID.
+
+		Now Carol can encrypt a message for Alice,
+		check a signature on a message Alice signed,
+		form a shared DH secret, etc.
+
+Review: SCIDs provide uniqueness and security, just not (great) convenience.
+
+Now suppose we care about convenience and security but not uniqueness.
+
+PGP "web of trust" model:
+
+	Alice generates a public/private key pair,
+	and signs a message saying, "Public key <k> belongs to Alice".
+		- often called a "Self-signed certificate".
+
+	Alice and Bob meet in a room at a conference
+	(e.g., a "key-signing party")
+		- Bob signs a message saying, "I met Alice, and her key is <k>"
+		- Alice does the same for Bob.
+
+	Bob later meets Carol in a room, and they sign each others' keys.
+
+	Users' mutual signaturs form a graph representing a "web of trust".
+
+	Carol wants to send a message securely to Alice,
+	but doesn't yet know Alice's key.
+		- She searches for a "short" path in her web of trust.
+		- Carol has signed Bob's key and Bob has signed Alice.
+		- so Carol trusts the key signed by Bob.
+
+	Issues:
+		- How do you get people to show up at key-signing parties?
+		- How do you evaluate "trust" on the graph?  Many questions:
+			- how does trust relate to path length?
+			- how does trust relate to number of paths found?
+			- what happens when you find "trusted" paths
+			  to different keys of the same name?
+				- Might be legit - Alice Smith vs Alice Jones
+				- One might be an impersonator
+		- What happens when a user needs to change their key pair?
+			- get all friends to sign new key again
+			- distribute signed message revoking the old one
+
+Review: Web of Trust provides convenient names, but not necessarily unique
+
+UIA: Increasing the convenience of Web of Trust model
+
+	Each user's device maintains "friends list" embodying
+	explicit representation of nearby links in "trust network"
+
+	To set up a friend connection, must have secure out-of-band channel
+
+		Ideal: touch-based, or near-field communications,
+		which can uniquely identify "closest" device.
+
+			Example: iPhone "Bump"
+
+		Local-area Ethernet also works, with confirmation step
+			Devices A and B each show a random string
+				A: "meals about yuck"
+				B: "biota exec got"
+			User selects A's phrase on device B and vice versa
+
+		Show scenario with and without MITM attacker...
+
+	Other possible out-of-band channels:
+		phone call
+		physically mail a USB stick or printout to address you trust
+		...
+
+
+Reading list
+	PKI
+	PGP
+	SPKI/SDSI
+	UIA
+	...
+
