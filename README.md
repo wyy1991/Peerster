@@ -3,6 +3,8 @@ Peerster
 Author: Yuye 
 Date: fall 2013
 
+Language: C++ ,   Qt 
+
 This is my final project for decentralized system course. 
 Peerster is a decentrailzed system for gossiping, private messaging and file sharing. 
 The dsybil recommendation system is added to recommend files during search. 
